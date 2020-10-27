@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Genres</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books, .books td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Genres:</h1>
+
+<table class="genres">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="genre : ${genres}">
+        <td th:text="${genre.id}">1</td>
+        <td th:text="${genre.gName}">Name</td>
+        <td>
+            <a th:href="@{/genres/edit(id=${genre.id})}" href="editGenre.html">Edit</a>
+        </td>
+        <td>
+            <form id="delete-form" th:action="@{/genres/delete(id=${genre.id})}" th:method="post" action="genres.html">
+                <button type="submit">-</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<table>
+    <tbody>
+    <tr>
+        <td><label>Add genre:</label></td>
+        <td>
+            <form id="add-form" th:action="@{/genres/add}" th:method="get" action="editGenre.html">
+                <button type="submit">+</button>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td><label>Go to:</label></td>
+        <td>
+            <form id="books-form" th:action="@{/}" th:method="get" action="books.html">
+                <button type="submit">Books</button>
+            </form>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+
+
+</body>
+</html>

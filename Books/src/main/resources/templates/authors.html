@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Authors</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books, .books td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Authors:</h1>
+
+<table class="authors">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="author : ${authors}">
+        <td th:text="${author.id}">1</td>
+        <td th:text="${author.fullName}">Name</td>
+        <td>
+            <a th:href="@{/authors/edit(id=${author.id})}" href="editAuthor.html">Edit</a>
+        </td>
+        <td>
+            <form id="delete-form" th:action="@{/authors/delete(id=${author.id})}" th:method="post" action="authors.html">
+                <button type="submit">-</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<table>
+    <tbody>
+    <tr>
+        <td><label>Add author:</label></td>
+        <td>
+            <form id="add-form" th:action="@{/authors/add}" th:method="get" action="editAuthor.html">
+                <button type="submit">+</button>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td><label>Go to:</label></td>
+        <td>
+            <form id="books-form" th:action="@{/}" th:method="get" action="books.html">
+                <button type="submit">Books</button>
+            </form>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+
+
+</body>
+</html>
