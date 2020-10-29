@@ -3,25 +3,12 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Authors</title>
-    <style type="text/css">
-        body {
-            padding: 50px;
-        }
-
-        .books, .books td {
-            border: 1px solid lightgray;
-            padding: 5px;
-        }
-
-        .row {
-            margin-top: 10px;
-        }
-    </style>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
 </head>
 <body>
 <h1>Authors:</h1>
 
-<table class="authors">
+<table id = "authors" class="maintbl">
     <thead>
     <tr>
         <th>ID</th>
