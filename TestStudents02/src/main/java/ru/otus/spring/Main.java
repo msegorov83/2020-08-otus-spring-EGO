@@ -17,12 +17,7 @@ public class Main {
         AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext(Main.class);
 
-        Resource resource = context.getResource("classpath:questions.csv");
-        StudentService studentService=context.getBean(StudentService.class);
-        QuestionService questionService = context.getBean(QuestionService.class);
-        ExamService examService = context.getBean(ExamService.class);
-
-        new InitApp().run(examService,studentService,questionService, resource);
+        new InitApp().run();
     }
 
 
