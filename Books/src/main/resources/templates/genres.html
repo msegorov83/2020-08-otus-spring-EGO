@@ -3,25 +3,12 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Genres</title>
-    <style type="text/css">
-        body {
-            padding: 50px;
-        }
-
-        .books, .books td {
-            border: 1px solid lightgray;
-            padding: 5px;
-        }
-
-        .row {
-            margin-top: 10px;
-        }
-    </style>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
 </head>
 <body>
 <h1>Genres:</h1>
 
-<table class="genres">
+<table id="genres"  class="maintbl">
     <thead>
     <tr>
         <th>ID</th>
