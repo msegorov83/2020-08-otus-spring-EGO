@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.otus.spring.dao.QuestionDAO;
 import ru.otus.spring.dao.StudentDAO;
+import ru.otus.spring.runner.InitApp;
 import ru.otus.spring.service.*;
 
 @Configuration
