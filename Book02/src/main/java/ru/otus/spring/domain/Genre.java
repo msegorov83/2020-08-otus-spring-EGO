@@ -10,20 +10,20 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "gName", nullable = false, unique = true)
-    private String gName;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
-    public Genre () {}
+    public Genre() {}
 
     @Override
     public String toString() {
         return "Genre{" +
                 "id=" + id +
-                ", name='" + gName + '\'' +
+                ", gName='" + name + '\'' +
                 '}';
     }
 
-    public Genre(String name) {this.gName = name;}
+    public Genre(String name) {this.name = name;}
 
     public Long getId() {
         return id;
@@ -33,11 +33,11 @@ public class Genre {
         this.id = id;
     }
 
-    public String getgName() {
-        return gName;
+    public String getName() {
+        return name;
     }
 
-    public void setgName(String gName) {
-        this.gName = gName;
+    public void setName(String name) {
+        this.name = name;
     }
 }
