@@ -1,15 +1,15 @@
 package ru.otus.spring.repository;
 
 import ru.otus.spring.domain.Author;
+import ru.otus.spring.domain.Book;
 
 import java.util.List;
 
-public interface AuthorJdbc {
-
-    List<Author> findAll();
+public interface AuthorRepositoryJpa {
+    Author save(Author author);
     Author findById(long id);
-    void save(Author author);
+    List<Author> findAll();
     void deleteById(long id);
-    int count();
+    Long count();
 
 }

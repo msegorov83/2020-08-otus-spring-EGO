@@ -6,17 +6,19 @@ spring:
   datasource:
     url: jdbc:h2:mem:testdb
     initialization-mode: always
+    platform: h2
+    data: data.sql
 
   jpa:
-    generate-ddl: true
+    generate-ddl: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
     properties:
       hibernate:
         format_sql: false
 
-    show-sql: false
+    show-sql: true
 
 
 logging:

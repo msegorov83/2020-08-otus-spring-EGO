@@ -4,11 +4,10 @@ import ru.otus.spring.domain.Genre;
 
 import java.util.List;
 
-public interface GenreJdbc {
-
-    List<Genre> findAll();
+public interface GenreRepositoryJpa {
     Genre findById(long id);
-    void save(Genre genre);
+    List<Genre> findAll();
+    Long count();
     void deleteById(long id);
-    int count();
+    Genre save(Genre genre);
 }
