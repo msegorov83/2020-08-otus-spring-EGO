@@ -1,16 +1,17 @@
 package ru.otus.spring.repository;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
+
 @Repository
 public class BookRepositoryJpaImpl implements BookRepositoryJpa {
 
@@ -23,11 +24,18 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
         return query.getResultList();
     }
 
+    @Transactional
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete from Book b where b.id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        Book book = em.find(Book.class, id);
+        em.remove(book);
+    }
+
+    @Override
+    public List<Book> finbByAuthor(Author author){
+        Query query = em.createQuery("SELECT b FROM Book b join fetch b.author a WHERE a.id = :id");
+        query.setParameter ("id", author.getId());
+        return query.getResultList();
     }
 
     @Override
@@ -37,6 +45,8 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
         return (Book) query.getSingleResult();
     }
 
+
+    @Transactional
     @Override
     public Book save(Book book) {
         if(book.getId()==0) {
@@ -53,10 +63,5 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
         return (Long) query.getSingleResult();
     }
 
-    @Override
-    public List<Book> findAllBookByAuthor(String name){
-        Query query = em.createQuery("SELECT b FROM Book b join fetch b.genre g join fetch b.author a WHERE a.fullName = :fullName");
-        query.setParameter("fullName", name);
-        return query.getResultList();
-    }
+
 }

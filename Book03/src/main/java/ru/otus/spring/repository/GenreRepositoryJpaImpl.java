@@ -10,7 +10,6 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-@Transactional
 @Repository
 public class GenreRepositoryJpaImpl implements GenreRepositoryJpa {
 
@@ -34,13 +33,14 @@ public class GenreRepositoryJpaImpl implements GenreRepositoryJpa {
         return (Long) query.getSingleResult();
      }
 
+    @Transactional
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete from Genre g where g.id = :id", Genre.class);
-        query.setParameter("id", id);
-        query.executeUpdate();
+        Genre genre = em.find(Genre.class, id);
+        em.remove(genre);
     }
 
+    @Transactional
     @Override
     public Genre save(Genre genre) {
         if(genre.getId()==0) {

@@ -1,6 +1,7 @@
 package ru.otus.spring.repository;
 
 
+import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 
 import java.util.List;
@@ -11,5 +12,6 @@ public interface BookRepositoryJpa {
     Book findByIdAllInfo(long id);
     Book save(Book book);
     Long count();
-    List<Book> findAllBookByAuthor(String name);
+    List<Book> finbByAuthor(Author author);
+
 }

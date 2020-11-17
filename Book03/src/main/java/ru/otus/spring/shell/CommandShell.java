@@ -6,7 +6,10 @@ import org.springframework.shell.standard.ShellOption;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.Genre;
-import ru.otus.spring.repository.*;
+import ru.otus.spring.repository.AuthorRepositoryJpaImpl;
+import ru.otus.spring.repository.BookRepositoryJpaImpl;
+import ru.otus.spring.repository.GenreRepositoryJpaImpl;
+import ru.otus.spring.service.BookService;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +29,7 @@ genres
 addg "Фантастика"
 genre 3
 countg
-countg
+delg 3
 
 books
 book 1
@@ -43,11 +46,14 @@ public class CommandShell {
     private BookRepositoryJpaImpl bookRepositoryJpa;
     private AuthorRepositoryJpaImpl authorRepositoryJpa;
     private GenreRepositoryJpaImpl genreRepositoryJpa;
+    private BookService bookService;
 
-    public CommandShell(BookRepositoryJpaImpl bookRepositoryJpa, AuthorRepositoryJpaImpl authorRepositoryJpa, GenreRepositoryJpaImpl genreRepositoryJpa) {
+    public CommandShell(BookRepositoryJpaImpl bookRepositoryJpa, AuthorRepositoryJpaImpl authorRepositoryJpa, GenreRepositoryJpaImpl genreRepositoryJpa, BookService bookService) {
         this.bookRepositoryJpa = bookRepositoryJpa;
         this.authorRepositoryJpa = authorRepositoryJpa;
         this.genreRepositoryJpa = genreRepositoryJpa;
+        this.bookService = bookService;
+
     }
 
     @ShellMethod(value = "Get authors", key = {"authors"})
@@ -160,6 +166,7 @@ public class CommandShell {
         book.setGenre(genre);
         book.setAuthor(author);
 
+
         bookRepositoryJpa.save(book);
         return "added " + name;
     }
@@ -173,7 +180,8 @@ public class CommandShell {
 
     @ShellMethod(value = "Get book (name)", key = {"booksa"})
     public String getBooksAuthor(@ShellOption String name) {
-        List<Book> books = bookRepositoryJpa.findAllBookByAuthor(name);
+        List<Book> books = bookService.findAllBookByAuthor(name);
+        //  List<Book> books = bookRepositoryJpa.findAllBookByAuthor(name);
         System.out.println("Book: " + books);
 
         return "books " + name;

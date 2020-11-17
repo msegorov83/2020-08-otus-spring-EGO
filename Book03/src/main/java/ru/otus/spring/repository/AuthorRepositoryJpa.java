@@ -11,5 +11,6 @@ public interface AuthorRepositoryJpa {
     List<Author> findAll();
     void deleteById(long id);
     Long count();
+    Author findByName(String name);
 
 }
