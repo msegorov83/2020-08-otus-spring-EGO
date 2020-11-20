@@ -14,11 +14,6 @@ public class Author {
     public Author(String fullName) { this.fullName = fullName; }
     public Author() {}
 
-    public Author(long id, String full_name) {
-        this.id=id;
-        this.fullName = fullName;
-    }
-
     @Override
     public String toString() {
         return "Author{" +

@@ -8,36 +8,36 @@ public class Genre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "name", nullable = false, unique = true)
-    private String name;
+    private String gName;
 
-    public Genre() {}
+    public Genre () {}
 
     @Override
     public String toString() {
         return "Genre{" +
                 "id=" + id +
-                ", gName='" + name + '\'' +
+                ", name='" + gName + '\'' +
                 '}';
     }
 
-    public Genre(String name) {this.name = name;}
+    public Genre(String name) {this.gName = name;}
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getgName() {
+        return gName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setgName(String gName) {
+        this.gName = gName;
     }
 }
