@@ -5,8 +5,10 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.BookAuthor;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.AuthorRepositoryJpaImpl;
+import ru.otus.spring.repository.BookAuthorRepositoryJpaImpl;
 import ru.otus.spring.repository.BookRepositoryJpaImpl;
 import ru.otus.spring.repository.GenreRepositoryJpaImpl;
 import ru.otus.spring.service.BookService;
@@ -47,13 +49,14 @@ public class CommandShell {
     private AuthorRepositoryJpaImpl authorRepositoryJpa;
     private GenreRepositoryJpaImpl genreRepositoryJpa;
     private BookService bookService;
+    private BookAuthorRepositoryJpaImpl bookAuthorRepositoryJpaImpl;
 
-    public CommandShell(BookRepositoryJpaImpl bookRepositoryJpa, AuthorRepositoryJpaImpl authorRepositoryJpa, GenreRepositoryJpaImpl genreRepositoryJpa, BookService bookService) {
+    public CommandShell( BookAuthorRepositoryJpaImpl bookAuthorRepositoryJpaImpl, BookRepositoryJpaImpl bookRepositoryJpa, AuthorRepositoryJpaImpl authorRepositoryJpa, GenreRepositoryJpaImpl genreRepositoryJpa, BookService bookService) {
         this.bookRepositoryJpa = bookRepositoryJpa;
         this.authorRepositoryJpa = authorRepositoryJpa;
         this.genreRepositoryJpa = genreRepositoryJpa;
         this.bookService = bookService;
-
+        this.bookAuthorRepositoryJpaImpl = bookAuthorRepositoryJpaImpl;
     }
 
     @ShellMethod(value = "Get authors", key = {"authors"})
@@ -67,15 +70,16 @@ public class CommandShell {
         authorRepositoryJpa.save(new Author("Питер Гуральник"));
         genreRepositoryJpa.save(new Genre("Биография"));
         genreRepositoryJpa.save(new Genre("Другие"));
-        Book book= new Book("Элвис Пресли. Последний поезд в Мемфис");
+        Book book = new Book("Элвис Пресли. Последний поезд в Мемфис");
+
         Set<Genre> genre = new HashSet();
         genre.add(genreRepositoryJpa.findById(1L));
-        Set<Author> author = new HashSet();
-        author.add(authorRepositoryJpa.findById(1L));
         book.setGenre(genre);
-        book.setAuthor(author);
 
-        bookRepositoryJpa.save(book);
+        var newBook = bookRepositoryJpa.save(book);
+        BookAuthor bookAuthor = new BookAuthor(newBook,authorRepositoryJpa.findById(1L));
+        bookAuthorRepositoryJpaImpl.save(bookAuthor);
+
         return "demo";
     }
 
@@ -144,8 +148,12 @@ public class CommandShell {
     @ShellMethod(value = "Get book (id)", key = {"book"})
     public String getBook(@ShellOption long id) {
         Book book = bookRepositoryJpa.findByIdAllInfo(id);
-        System.out.println("Book: " + book.getName() + " Author: " + book.getAuthor().getFullName() + " Genre: " + book.getGenre().getgName());
+        var authors = book.getAuthors();
 
+        BookAuthor bookAuthor= (BookAuthor) authors.stream().findFirst().get();
+        Author author = authorRepositoryJpa.findById(  bookAuthor.getAuthor().getId() );
+
+        System.out.println("Book: " + book.getName() + " Author: " + author.getFullName() + " Genre: " + book.getGenre().getgName());
         return "book " + id;
     }
 
@@ -161,19 +169,18 @@ public class CommandShell {
 
         Set<Genre> genre = new HashSet();
         genre.add(genreRepositoryJpa.findById(genreId));
-        Set<Author> author = new HashSet();
-        author.add(authorRepositoryJpa.findById(authorId));
         book.setGenre(genre);
-        book.setAuthor(author);
 
+        var newBook = bookRepositoryJpa.save(book);
+        BookAuthor bookAuthor = new BookAuthor( newBook, authorRepositoryJpa.findById(authorId) );
+        bookAuthorRepositoryJpaImpl.save(bookAuthor);
 
-        bookRepositoryJpa.save(book);
         return "added " + name;
     }
 
     @ShellMethod(value = "Delete book (id)", key = {"delb"})
     public String delBook(@ShellOption long id) {
-
+        bookAuthorRepositoryJpaImpl.deleteByBookId(id);
         bookRepositoryJpa.deleteById(id);
         return "deleted " + id;
     }
@@ -181,7 +188,6 @@ public class CommandShell {
     @ShellMethod(value = "Get book (name)", key = {"booksa"})
     public String getBooksAuthor(@ShellOption String name) {
         List<Book> books = bookService.findAllBookByAuthor(name);
-        //  List<Book> books = bookRepositoryJpa.findAllBookByAuthor(name);
         System.out.println("Book: " + books);
 
         return "books " + name;

@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
+import ru.otus.spring.domain.BookAuthor;
 import ru.otus.spring.domain.Genre;
 
 import java.util.*;
@@ -36,15 +37,23 @@ class BookRepositoryJpaImplTest {
     @Autowired
     private GenreRepositoryJpaImpl genreRepositoryJpa;
 
+    @Autowired
+    private BookAuthorRepositoryJpaImpl bookAuthorRepositoryJpa;
+
     @Test
     void testFindByIdAllInfo() {
         var actualBook = bookRepositoryJpa.findByIdAllInfo(BOOK_ID);
         var expectedAuthor = authorRepositoryJpa.findById(AUTHOR_ID);
         var expectedGenre = genreRepositoryJpa.findById(GENRE_ID);
 
+
+        var actualAuthors = actualBook.getAuthors();
+        BookAuthor actualBookAuthor= (BookAuthor) actualAuthors.stream().findFirst().get();
+        Author actualAuthor = authorRepositoryJpa.findById( actualBookAuthor.getAuthor().getId());
+
         assertThat(actualBook).isNotNull();
         assertThat(actualBook.getName()).isEqualTo(CUR_BOOK_NAME);
-        assertThat(actualBook.getAuthor().getFullName()).isEqualTo(expectedAuthor.getFullName());
+        assertThat(actualAuthor.getFullName()).isEqualTo(expectedAuthor.getFullName());
         assertThat(actualBook.getGenre().getgName()).isEqualTo(expectedGenre.getgName());
     }
 
@@ -54,10 +63,7 @@ class BookRepositoryJpaImplTest {
         book.setId(BOOK_ID);
         Set<Genre> genre = new HashSet();
         genre.add(genreRepositoryJpa.findById(GENRE_ID));
-        Set<Author> author = new HashSet();
-        author.add(authorRepositoryJpa.findById(AUTHOR_ID));
         book.setGenre(genre);
-        book.setAuthor(author);
         List<Book> expectedBook = new ArrayList<>();
         expectedBook.add(book);
 
@@ -77,6 +83,7 @@ class BookRepositoryJpaImplTest {
     @Transactional
     @Test
     void testDeleteById() {
+        bookAuthorRepositoryJpa.deleteByBookId(BOOK_ID);
         bookRepositoryJpa.deleteById(BOOK_ID);
         var actualCount = bookRepositoryJpa.count();
         assertThat(actualCount).isEqualTo(ZERO_COUNT);
@@ -88,13 +95,14 @@ class BookRepositoryJpaImplTest {
         Book book= new Book(NEW_BOOK_NAME);
         Set<Genre> genre = new HashSet();
         genre.add(genreRepositoryJpa.findById(GENRE_ID));
-        Set<Author> author = new HashSet();
-        author.add(authorRepositoryJpa.findById(AUTHOR_ID));
-        book.setGenre(genre);
-        book.setAuthor(author);
+         book.setGenre(genre);
 
         var actualBook = bookRepositoryJpa.save(book);
+        BookAuthor actualBookAuthor = new BookAuthor( actualBook, authorRepositoryJpa.findById(AUTHOR_ID) );
+        bookAuthorRepositoryJpa.save(actualBookAuthor);
+
         var expectedBook = bookRepositoryJpa.findByIdAllInfo(NEW_BOOK_ID);
+
 
         assertThat(actualBook).isNotNull();
         assertThat(actualBook.getName()).isEqualTo(expectedBook.getName());
