@@ -17,11 +17,8 @@ public class Book {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @BatchSize( size = 5)
-    @ManyToMany(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private Set<Author> author = new HashSet();
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
+    private Set<BookAuthor> authors = new HashSet<>();
 
     @BatchSize(size = 5)
     @ManyToMany(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
@@ -34,7 +31,7 @@ public class Book {
 
     public Book(String name, Set author, Set genre) {
         this.name = name;
-        this.author = author;
+        this.authors = author;
         this.genre = genre;
     }
 
@@ -63,16 +60,16 @@ public class Book {
         this.name = name;
     }
 
-    public Author getAuthor() {
-        return author.stream().findFirst().orElse(null);
+    public Set getAuthors() {
+       return this.authors;
     }
 
     public Genre getGenre() {
       return genre.stream().findFirst().orElse(null);
     }
 
-    public void setAuthor(Set author) {
-        this.author = author;
+    public void setAuthors(Set authors) {
+        this.authors = authors;
     }
 
     public void setGenre(Set genre) {

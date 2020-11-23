@@ -1,5 +1,7 @@
 package ru.otus.spring.domain;
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "authors")
@@ -10,6 +12,9 @@ public class Author {
 
     @Column(name = "full_name", nullable = false, unique = true)
     private String fullName;
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+    private Set<BookAuthor> books = new HashSet<>();
 
     public Author(String fullName) { this.fullName = fullName; }
     public Author() {}
@@ -30,6 +35,10 @@ public class Author {
         this.id = id;
     }
 
+    public Set getBooks() {
+        return this.books;
+    }
+
     public String getFullName() {
         return fullName;
     }
@@ -37,5 +46,6 @@ public class Author {
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
+
 }
 

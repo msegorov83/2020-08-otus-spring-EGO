@@ -2,7 +2,6 @@ package ru.otus.spring.repository;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 
 import javax.persistence.EntityManager;
@@ -19,6 +18,14 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
     private EntityManager em;
 
     @Override
+    public List<Book> findByIds (List<Long> ids) {
+        Query query = em.createQuery("select b from Book b where b.id in (:ids)");
+        query.setParameter("ids", ids);
+
+        return query.getResultList();
+    }
+
+    @Override
     public List<Book> findAll() {
         TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);
         return query.getResultList();
@@ -32,15 +39,8 @@ public class BookRepositoryJpaImpl implements BookRepositoryJpa {
     }
 
     @Override
-    public List<Book> finbByAuthor(Author author){
-        Query query = em.createQuery("SELECT b FROM Book b join fetch b.author a WHERE a.id = :id");
-        query.setParameter ("id", author.getId());
-        return query.getResultList();
-    }
-
-    @Override
     public Book findByIdAllInfo(long id) {
-        Query query = em.createQuery("SELECT b FROM Book b join fetch b.genre g join fetch b.author a WHERE b.id = :id");
+        Query query = em.createQuery("SELECT b FROM Book b join fetch b.genre g  WHERE b.id = :id");
         query.setParameter("id", id);
         return (Book) query.getSingleResult();
     }
