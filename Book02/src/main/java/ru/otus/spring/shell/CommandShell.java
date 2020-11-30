@@ -3,18 +3,20 @@ package ru.otus.spring.shell;
 import static java.lang.System.out;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import org.hibernate.Hibernate;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.BookAuthor;
+import ru.otus.spring.domain.BookGenre;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.repository.BookAuthorRepository;
+import ru.otus.spring.repository.BookGenreRepository;
 import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.GenreRepository;
 
@@ -51,12 +53,14 @@ public class CommandShell {
     private final GenreRepository genreRepository;
     private final BookRepository bookRepository;
     private final BookAuthorRepository bookAuthorRepository;
+    private final BookGenreRepository bookGenreRepository;
 
-    public CommandShell(AuthorRepository authorRepository, GenreRepository genreRepository, BookRepository bookRepository, BookAuthorRepository bookAuthorRepository) {
+    public CommandShell(AuthorRepository authorRepository, GenreRepository genreRepository, BookRepository bookRepository, BookAuthorRepository bookAuthorRepository, BookGenreRepository bookGenreRepository) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
         this.genreRepository = genreRepository;
         this.bookAuthorRepository = bookAuthorRepository;
+        this.bookGenreRepository = bookGenreRepository;
     }
 
     @ShellMethod(value = "Get authors", key = {"authors"})
@@ -65,20 +69,26 @@ public class CommandShell {
         return "authors";
     }
 
+    @Transactional
     @ShellMethod(value = "Demo mode", key = {"demo"})
     public String demoMode() {
         authorRepository.save(new Author("Питер Гуральник"));
         genreRepository.save(new Genre("Биография"));
         genreRepository.save(new Genre("Другие"));
         var book = new Book("Элвис Пресли. Последний поезд в Мемфис");
-        Set<Genre> genre = new HashSet<>();
-        genre.add(genreRepository.findById(1L));
-        book.setGenre(genre);
 
+        Hibernate.initialize(authorRepository.findById(1L));
+        Hibernate.initialize(genreRepository.findById(1L));
         var newBook = bookRepository.save(book);
         BookAuthor bookAuthor = new BookAuthor(newBook,authorRepository.findById(1L));
         bookAuthorRepository.save(bookAuthor);
+        BookGenre bookGenre = new BookGenre(newBook, genreRepository.findById(1L));
+        bookGenreRepository.save(bookGenre);
+
         return "demo";
+    }
+
+    private void initialize() {
     }
 
     @ShellMethod(value = "Add author (full_name)", key = {"adda"})
@@ -143,13 +153,23 @@ public class CommandShell {
         return "books";
     }
 
+    @Transactional
     @ShellMethod(value = "Get book (id)", key = {"book"})
     public String getBook(@ShellOption long id) {
-        Book book = bookRepository.findByIdAllInfo(id);
+
+        Book book = bookRepository.findById(id).get();
         var authors = book.getAuthors();
+        var genres = book.getGenres();
+
         BookAuthor bookAuthor = (BookAuthor) authors.stream().findFirst().get();
+        Hibernate.initialize(authorRepository.findById(bookAuthor.getAuthor().getId()));
         Author author = authorRepository.findById(bookAuthor.getAuthor().getId());
-        out.println("Book: " + book.getName() + " Author: " + author.getFullName() + " Genre: " + book.getGenre().getName());
+
+        BookGenre bookGenre = (BookGenre) genres.stream().findFirst().get();
+        Hibernate.initialize(genreRepository.findById(bookGenre.getAuthor().getId()));
+        Genre genre = genreRepository.findById(bookGenre.getAuthor().getId());
+
+        out.println("Book: " + book.getName() + " Author: " + author.getFullName() + " Genre: " + genre.getName());
 
         return "book " + id;
     }
@@ -160,17 +180,20 @@ public class CommandShell {
         return "countb";
     }
 
+    @Transactional
     @ShellMethod(value = "Add book (name, author_id, genre_id )", key = {"addb"})
     public String addBook(@ShellOption String name, @ShellOption long authorId, @ShellOption long genreId) {
         Book book = new Book(name);
 
-        Set<Genre> genre = new HashSet<>();
-        genre.add(genreRepository.findById(genreId));
-        book.setGenre(genre);
-
+        Hibernate.initialize(authorRepository.findById(authorId));
+        Hibernate.initialize(genreRepository.findById(genreId));
         var newBook = bookRepository.save(book);
+
         BookAuthor bookAuthor = new BookAuthor(newBook, authorRepository.findById(authorId));
         bookAuthorRepository.save(bookAuthor);
+
+        BookGenre bookGenre = new BookGenre(newBook, genreRepository.findById(genreId));
+        bookGenreRepository.save(bookGenre);
 
         return "added " + name;
     }
@@ -179,6 +202,7 @@ public class CommandShell {
     public String delBook(@ShellOption long id) {
         var book = bookRepository.findById(id);
         bookAuthorRepository.deleteByBook(book.get());
+        bookGenreRepository.deleteByBook(book.get());
         bookRepository.deleteById(id);
         return "deleted " + id;
     }

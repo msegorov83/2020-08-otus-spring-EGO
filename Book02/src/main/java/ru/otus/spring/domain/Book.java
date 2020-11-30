@@ -2,16 +2,12 @@ package ru.otus.spring.domain;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.hibernate.annotations.BatchSize;
@@ -28,14 +24,12 @@ public class Book {
     private String name;
 
     @BatchSize(size = 5)
-    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private Set<BookAuthor> authors = new HashSet<>();
 
     @BatchSize(size = 5)
-    @ManyToMany(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinTable(name = "book_genre", joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    private Set<Genre> genre = new HashSet<>();
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    private Set<BookGenre> genres = new HashSet<>();
 
     public Book() {
 
@@ -69,12 +63,9 @@ public class Book {
         return this.authors;
     }
 
-    public Genre getGenre() {
-        return genre.stream().findFirst().orElse(null);
+    public Set<BookGenre> getGenres() {
+        return this.genres;
     }
 
-    public void setGenre(Set<Genre> genre) {
-        this.genre = genre;
-    }
 
 }

@@ -24,7 +24,7 @@ public class Author {
     private String fullName;
 
     @BatchSize(size = 5)
-    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private Set<BookAuthor> books = new HashSet<>();
 
     public Author(String fullName) {

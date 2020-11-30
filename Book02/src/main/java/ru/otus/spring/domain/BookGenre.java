@@ -11,26 +11,27 @@ import org.hibernate.annotations.Immutable;
 
 @Entity
 @Immutable
-public class BookAuthor {
+public class BookGenre {
+
     @Embeddable
     public static class Id implements Serializable {
 
         @Column(name = "book_id")
         private Long bookId;
 
-        @Column(name = "author_id")
-        private Long authorId;
+        @Column(name = "genre_id")
+        private Long genreId;
 
         @Override
         public int hashCode() {
-            return bookId.hashCode() + authorId.hashCode();
+            return bookId.hashCode() + genreId.hashCode();
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Id) {
-                Id other = (Id) obj;
-                return this.authorId.equals(other.authorId) && this.bookId.equals(other.bookId);
+            if (obj instanceof BookGenre.Id) {
+                BookGenre.Id other = (BookGenre.Id) obj;
+                return this.genreId.equals(other.genreId) && this.bookId.equals(other.bookId);
             }
             return false;
         }
@@ -38,32 +39,32 @@ public class BookAuthor {
     }
 
     @EmbeddedId
-    private final Id id = new Id();
+    private final BookGenre.Id id = new BookGenre.Id();
 
     @ManyToOne
     @JoinColumn(name = "book_id", insertable = false, updatable = false)
     private Book book;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", insertable = false, updatable = false)
-    private Author author;
+    @JoinColumn(name = "genre_id", insertable = false, updatable = false)
+    private Genre genre;
 
-    public BookAuthor() {
+    public BookGenre() {
     }
 
-    public BookAuthor(Book book, Author author) {
+    public BookGenre(Book book, Genre genre) {
         this.book = book;
-        this.author = author;
+        this.genre = genre;
 
         this.id.bookId = book.getId();
-        this.id.authorId = author.getId();
+        this.id.genreId = genre.getId();
 
-        book.getAuthors().add(this);
-        author.getBooks().add(this);
+        book.getGenres().add(this);
+        genre.getBooks().add(this);
     }
 
-    public Author getAuthor() {
-        return author;
+    public Genre getAuthor() {
+        return genre;
     }
 
     public Book getBook() {
