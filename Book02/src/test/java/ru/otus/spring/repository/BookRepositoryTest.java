@@ -1,5 +1,6 @@
 package ru.otus.spring.repository;
 
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.domain.Author;
 import ru.otus.spring.domain.Book;
 import ru.otus.spring.domain.BookAuthor;
+import ru.otus.spring.domain.BookGenre;
 import ru.otus.spring.domain.Genre;
 
 import java.util.ArrayList;
@@ -42,20 +44,30 @@ class BookRepositoryTest {
     @Autowired
     private BookAuthorRepository bookAuthorRepository;
 
+    @Autowired
+    private BookGenreRepository bookGenreRepository;
+
+    @Transactional
     @Test
     void findByIdAllInfo() {
-        var actualBook = bookRepository.findByIdAllInfo(BOOK_ID);
+        var actualBook = bookRepository.findById(BOOK_ID).get();
         var expectedAuthor = authorRepository.findById(AUTHOR_ID);
         var expectedGenre = genreRepository.findById(GENRE_ID);
 
         var actualAuthors = actualBook.getAuthors();
         BookAuthor actualBookAuthor= (BookAuthor) actualAuthors.stream().findFirst().get();
-        Author actualAuthor = authorRepository.findById( actualBookAuthor.getAuthor().getId());
+        Hibernate.initialize(authorRepository.findById(actualBookAuthor.getAuthor().getId()));
+        Author actualAuthor = authorRepository.findById(actualBookAuthor.getAuthor().getId());
+
+        var actualGenres = actualBook.getGenres();
+        BookGenre actualBookGenre = (BookGenre) actualGenres.stream().findFirst().get();
+        Hibernate.initialize(genreRepository.findById(actualBookGenre.getAuthor().getId()));
+        Genre actualGenre = genreRepository.findById(actualBookGenre.getAuthor().getId());
 
         assertThat(actualBook).isNotNull();
         assertThat(actualBook.getName()).isEqualTo(CUR_BOOK_NAME);
         assertThat(actualAuthor.getFullName()).isEqualTo(expectedAuthor.getFullName());
-        assertThat(actualBook.getGenre().getName()).isEqualTo(expectedGenre.getName());
+        assertThat(actualGenre.getName()).isEqualTo(expectedGenre.getName());
     }
 
     @Test
@@ -84,8 +96,9 @@ class BookRepositoryTest {
     void testDeleteById() {
         var book = bookRepository.findById(BOOK_ID);
         bookAuthorRepository.deleteByBook(book.get());
-
+        bookGenreRepository.deleteByBook(book.get());
         bookRepository.deleteById(BOOK_ID);
+
         var actualCount = bookRepository.count();
         assertThat(actualCount).isEqualTo(ZERO_COUNT);
     }
@@ -94,15 +107,16 @@ class BookRepositoryTest {
     @Test
     void testSave() {
         Book book= new Book(NEW_BOOK_NAME);
-        Set<Genre> genre = new HashSet();
-        genre.add(genreRepository.findById(GENRE_ID));
-        book.setGenre(genre);
-
         var actualBook = bookRepository.save(book);
-        BookAuthor actualBookAuthor = new BookAuthor( actualBook, authorRepository.findById(AUTHOR_ID) );
+
+        Hibernate.initialize(authorRepository.findById(AUTHOR_ID));
+        BookAuthor actualBookAuthor = new BookAuthor(actualBook, authorRepository.findById(AUTHOR_ID));
         bookAuthorRepository.save(actualBookAuthor);
 
-        var expectedBook = bookRepository.findByIdAllInfo(NEW_BOOK_ID);
+        Hibernate.initialize(genreRepository.findById(GENRE_ID));
+        BookGenre actualBookGenre = new BookGenre(actualBook, genreRepository.findById(GENRE_ID));
+        bookGenreRepository.save(actualBookGenre);
+        var expectedBook = bookRepository.findById(NEW_BOOK_ID).get();
 
         assertThat(actualBook).isNotNull();
         assertThat(actualBook.getName()).isEqualTo(expectedBook.getName());
