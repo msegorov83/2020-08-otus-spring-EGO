@@ -2,9 +2,6 @@ package ru.otus.spring.shell;
 
 import static java.lang.System.out;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.hibernate.Hibernate;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -19,7 +16,7 @@ import ru.otus.spring.repository.BookAuthorRepository;
 import ru.otus.spring.repository.BookGenreRepository;
 import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.GenreRepository;
-
+import ru.otus.spring.service.BookService;
 
 /*Commands for example
 
@@ -54,13 +51,15 @@ public class CommandShell {
     private final BookRepository bookRepository;
     private final BookAuthorRepository bookAuthorRepository;
     private final BookGenreRepository bookGenreRepository;
+    private final BookService bookService;
 
-    public CommandShell(AuthorRepository authorRepository, GenreRepository genreRepository, BookRepository bookRepository, BookAuthorRepository bookAuthorRepository, BookGenreRepository bookGenreRepository) {
+    public CommandShell(AuthorRepository authorRepository, GenreRepository genreRepository, BookRepository bookRepository, BookAuthorRepository bookAuthorRepository, BookGenreRepository bookGenreRepository, BookService bookService) {
         this.bookRepository = bookRepository;
         this.authorRepository = authorRepository;
         this.genreRepository = genreRepository;
         this.bookAuthorRepository = bookAuthorRepository;
         this.bookGenreRepository = bookGenreRepository;
+        this.bookService = bookService;
     }
 
     @ShellMethod(value = "Get authors", key = {"authors"})
@@ -77,8 +76,6 @@ public class CommandShell {
         genreRepository.save(new Genre("Другие"));
         var book = new Book("Элвис Пресли. Последний поезд в Мемфис");
 
-        Hibernate.initialize(authorRepository.findById(1L));
-        Hibernate.initialize(genreRepository.findById(1L));
         var newBook = bookRepository.save(book);
         BookAuthor bookAuthor = new BookAuthor(newBook,authorRepository.findById(1L));
         bookAuthorRepository.save(bookAuthor);
@@ -162,11 +159,9 @@ public class CommandShell {
         var genres = book.getGenres();
 
         BookAuthor bookAuthor = (BookAuthor) authors.stream().findFirst().get();
-        Hibernate.initialize(authorRepository.findById(bookAuthor.getAuthor().getId()));
         Author author = authorRepository.findById(bookAuthor.getAuthor().getId());
 
         BookGenre bookGenre = (BookGenre) genres.stream().findFirst().get();
-        Hibernate.initialize(genreRepository.findById(bookGenre.getAuthor().getId()));
         Genre genre = genreRepository.findById(bookGenre.getAuthor().getId());
 
         out.println("Book: " + book.getName() + " Author: " + author.getFullName() + " Genre: " + genre.getName());
@@ -185,8 +180,6 @@ public class CommandShell {
     public String addBook(@ShellOption String name, @ShellOption long authorId, @ShellOption long genreId) {
         Book book = new Book(name);
 
-        Hibernate.initialize(authorRepository.findById(authorId));
-        Hibernate.initialize(genreRepository.findById(genreId));
         var newBook = bookRepository.save(book);
 
         BookAuthor bookAuthor = new BookAuthor(newBook, authorRepository.findById(authorId));
@@ -210,13 +203,8 @@ public class CommandShell {
 
     @ShellMethod(value = "Get book (name)", key = {"booksa"})
     public String getBooksAuthor(@ShellOption String name) {
-        Author author = authorRepository.findByFullName(name);
-        var bookAuthorList = bookAuthorRepository.findByAuthor(author);
-        List<Long> books = new ArrayList<>();
-        bookAuthorList.stream().filter(bookAuthor -> books.add(bookAuthor.getBook().getId())).toArray();
-
-        out.println("Book: " + bookRepository.findAllById(books));
+        out.println("Book: " +  bookService.findAllBookByAuthor(name));
         return "books " + name;
     }
 
-}
+ }
