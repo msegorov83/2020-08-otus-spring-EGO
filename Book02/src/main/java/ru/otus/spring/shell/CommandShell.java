@@ -200,7 +200,7 @@ public class CommandShell {
         return "deleted " + id;
     }
 
-
+    @Transactional
     @ShellMethod(value = "Get book (name)", key = {"booksa"})
     public String getBooksAuthor(@ShellOption String name) {
         out.println("Book: " +  bookService.findAllBookByAuthor(name));
