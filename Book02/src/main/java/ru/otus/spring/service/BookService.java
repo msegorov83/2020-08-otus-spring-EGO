@@ -25,7 +25,7 @@ public class BookService {
     public List<Book> findAllBookByAuthor(String name) {
 
         Author author = authorRepository.findByFullName(name);
-        var bookAuthorList = bookAuthorRepository.findByAuthor(author);
+        var bookAuthorList = author.getBooks();
         List<Long> books = new ArrayList<>();
         bookAuthorList.stream().filter(bookAuthor -> books.add(bookAuthor.getBook().getId())).toArray();
 
