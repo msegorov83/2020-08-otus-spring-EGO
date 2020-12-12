@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Genres</title>
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<h1>Genres:</h1>
+
+<table id="genres"  class="maintbl">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<br>
+
+<table>
+    <tbody>
+    <tr>
+        <td><label>Add genre:</label></td>
+        <td>
+            <form id="add-form" th:action="@{/genres/add}" th:method="get" action="editGenre.html">
+                <button type="submit">+</button>
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td><label>Go to:</label></td>
+        <td>
+            <form id="books-form" th:action="@{/}" th:method="get" action="books.html">
+                <button type="submit">Books</button>
+            </form>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+<script th:src="@{/js/genres.js}"></script>
+
+</body>
+</html>
