@@ -1,5 +1,8 @@
 package ru.otus.spring.page;
 
+import com.mongodb.client.MongoClients;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +15,7 @@ import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repository.AuthorRepository;
 import ru.otus.spring.repository.BookRepository;
 import ru.otus.spring.repository.GenreRepository;
+
 import java.util.*;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
@@ -63,17 +67,6 @@ public class BookPageController {
         model.addAttribute("authors", listAuthor);
 
         return "editBook";
-
-        /*
-         Author currAuthor = new Author();
-        authorRepository.findById(id).subscribe(author -> {
-            currAuthor.setId(author.getId());
-            currAuthor.setFullName(author.getFullName());
-        });
-
-        model.addAttribute ("author",currAuthor);
-        return "editAuthor";
-        * */
     }
 
     @GetMapping( "/add")
@@ -107,6 +100,8 @@ public class BookPageController {
             @ModelAttribute("genre") String genreId,
             Model model
     ) {
+        new MongoTemplate(new SimpleMongoClientDatabaseFactory(MongoClients.create(), "book"));
+
         Genre curGenre = new Genre();
         genreRepository.findById(genreId).subscribe(genre -> { curGenre.setId(genre.getId()); curGenre.setName(genre.getName()); });
 
