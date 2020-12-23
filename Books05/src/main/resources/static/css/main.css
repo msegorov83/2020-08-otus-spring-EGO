@@ -1,0 +1,12 @@
+ body {
+            padding: 50px;
+        }
+
+        .maintbl, .maintbl td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
