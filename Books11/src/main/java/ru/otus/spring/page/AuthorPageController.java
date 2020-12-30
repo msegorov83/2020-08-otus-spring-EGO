@@ -21,24 +21,18 @@ public class AuthorPageController {
         this.authorRepository = authorRepository;
     }
 
-    @Secured({"ADMIN", "USER"})
     @GetMapping("/authors")
     public String authors(Model model) {
         return "authors";
     }
 
-    @Secured("ADMIN")
     @GetMapping("/authors/edit")
     public String editPage(@RequestParam("id") long id, Model model) {
-
-
         Author author = authorRepository.findById(id);
-
         model.addAttribute("author", author);
         return "editAuthor";
     }
 
-    @Secured("ADMIN")
     @GetMapping("/authors/add")
     public String addAuthor(Model model) {
         List<Author> authors = authorRepository.findAll();
@@ -47,7 +41,6 @@ public class AuthorPageController {
         return "editAuthor";
     }
 
-    @Secured("ADMIN")
     @PostMapping("/authors/edit")
     public String addAuthor(
             Author author,

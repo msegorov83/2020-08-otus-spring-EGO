@@ -20,7 +20,7 @@ public class GenrePageController {
         this.genreRepository = genreRepository;
     }
 
-    @Secured({"ADMIN", "USER"})
+    //@Secured({"ADMIN", "USER"})
     @GetMapping("/genres")
     public String genres(Model model) {
         List<Genre> genres = genreRepository.findAll();
@@ -28,7 +28,7 @@ public class GenrePageController {
         return "genres";
     }
 
-    @Secured("ADMIN")
+   // @Secured("ADMIN")
     @GetMapping("/genres/edit")
     public String editPage(@RequestParam("id") long id, Model model) {
         Genre genre = genreRepository.findById(id);
@@ -36,7 +36,7 @@ public class GenrePageController {
         return "editGenre";
     }
 
-    @Secured("ADMIN")
+  //  @Secured("ADMIN")
     @GetMapping("/genres/add")
     public String addAuthor(Model model) {
         List<Genre> genres = genreRepository.findAll();
@@ -45,7 +45,7 @@ public class GenrePageController {
         return "editGenre";
     }
 
-    @Secured("ADMIN")
+  //  @Secured("ADMIN")
     public String addGenre(
             Genre genre,
             Model model
