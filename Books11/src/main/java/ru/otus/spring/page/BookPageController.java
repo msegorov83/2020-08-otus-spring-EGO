@@ -38,7 +38,7 @@ public class BookPageController {
         return "books";
     }
 
-    @Secured("ADMIN")
+  //  @Secured("ADMIN")
     @GetMapping("/add")
     public String addBook(Model model) {
         List<Genre> genres = genreRepository.findAll();
@@ -53,7 +53,7 @@ public class BookPageController {
         return "editBook";
     }
 
-    @Secured("ADMIN")
+   // @Secured("ADMIN")
     @PostMapping("/edit")
     public String addBook(
             Book book,
@@ -64,7 +64,7 @@ public class BookPageController {
         return "redirect:";
     }
 
-    @Secured("ADMIN")
+   // @Secured("ADMIN")
     @GetMapping("/edit")
     public String editPage(@RequestParam("id") long  id, Model model) {
 
