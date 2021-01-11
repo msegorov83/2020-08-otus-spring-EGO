@@ -2,7 +2,6 @@ package ru.otus.spring.page;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +37,6 @@ public class BookPageController {
         return "books";
     }
 
-  //  @Secured("ADMIN")
     @GetMapping("/add")
     public String addBook(Model model) {
         List<Genre> genres = genreRepository.findAll();
@@ -53,7 +51,6 @@ public class BookPageController {
         return "editBook";
     }
 
-   // @Secured("ADMIN")
     @PostMapping("/edit")
     public String addBook(
             Book book,
@@ -64,7 +61,6 @@ public class BookPageController {
         return "redirect:";
     }
 
-   // @Secured("ADMIN")
     @GetMapping("/edit")
     public String editPage(@RequestParam("id") long  id, Model model) {
 

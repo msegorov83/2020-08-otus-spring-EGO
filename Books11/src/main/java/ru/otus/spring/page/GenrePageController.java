@@ -1,12 +1,9 @@
 package ru.otus.spring.page;
 
 import java.util.List;
-
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.spring.domain.Genre;
 import ru.otus.spring.repostory.GenreRepository;
@@ -20,7 +17,6 @@ public class GenrePageController {
         this.genreRepository = genreRepository;
     }
 
-    //@Secured({"ADMIN", "USER"})
     @GetMapping("/genres")
     public String genres(Model model) {
         List<Genre> genres = genreRepository.findAll();
@@ -28,7 +24,6 @@ public class GenrePageController {
         return "genres";
     }
 
-   // @Secured("ADMIN")
     @GetMapping("/genres/edit")
     public String editPage(@RequestParam("id") long id, Model model) {
         Genre genre = genreRepository.findById(id);
@@ -36,7 +31,6 @@ public class GenrePageController {
         return "editGenre";
     }
 
-  //  @Secured("ADMIN")
     @GetMapping("/genres/add")
     public String addAuthor(Model model) {
         List<Genre> genres = genreRepository.findAll();
@@ -45,7 +39,6 @@ public class GenrePageController {
         return "editGenre";
     }
 
-  //  @Secured("ADMIN")
     public String addGenre(
             Genre genre,
             Model model
