@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: gateway-service
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    registerWithEureka: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+
+zuul:
+  sensitiveHeaders: Cookie,Set-Cookie
+  routes:
+    securityservice:
+      sensitiveHeaders:
+      path: /oauth/**
+      stripPrefix: true
+      serviceId: oauth-service
+    libraryservice:
+      sensitiveHeaders:
+      path: /library/**
+      #url: http://localhost:8090
+      stripPrefix: true
+      serviceId: library-service
+
