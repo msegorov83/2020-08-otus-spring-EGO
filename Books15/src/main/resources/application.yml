@@ -1,0 +1,46 @@
+spring:
+  data:
+    rest:
+      basePath: /datarest
+
+management:
+  security:
+      enabled: false
+  health:
+    default:
+      enable: true
+
+  endpoints:
+    beans:
+      cache:
+        time-to-live: "10s"
+
+    enabled-by-default: true
+
+    jmx:
+      exposure:
+        include: "health,info"
+
+    web:
+      cors:
+        allowed-origins: "http://localhost:8080"
+        allowed-methods: "GET,POST"
+
+      exposure:
+        include: "*"
+
+  endpoint:
+
+    health:
+      show-details: always
+
+    shutdown:
+      enabled: true
+
+    info:
+      enabled: true
+
+logging:
+  file: target/app.log
+  level:
+    root: info
