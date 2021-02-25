@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit genre</title>
+    <link th:href="@{/css/editpage.css}" rel="stylesheet" />
+</head>
+
+<form id="edit-form" th:action="@{/genres/edit(id=${genre.id})}" th:method="post" action="editGenres.html">
+    <h1>Genre info:</h1>
+
+    <div class="row">
+        <label for="id-input">Id:</label>
+        <input id="id-input" type="text" readonly="readonly" th:value="${genre.id}" value="1"/>
+    </div>
+
+    <div class="row">
+        <label for="genre-input">Name:</label>
+        <input id="genre-input" name="name" type="text" th:value="${genre.name}" value="John Doe"/>
+    </div>
+
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+</body>
+</html>
