@@ -13,17 +13,9 @@ public class GatewayConfiguration extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/oauth/**")
-                .permitAll()
-                .antMatchers("/**")
-                .authenticated();
 
-        /*
         http.csrf().disable()
-                .authorizeRequests().antMatchers("/oauth/**", "/oauth/check_token").permitAll()
+                .authorizeRequests().antMatchers("/oauth/**").permitAll()
                 .and()
                 .authorizeRequests().antMatchers("/").anonymous()
                 .and()
@@ -38,48 +30,10 @@ public class GatewayConfiguration extends ResourceServerConfigurerAdapter {
                 .passwordParameter("books_password")
                 .failureForwardUrl("/error")
                 .and()
-                .logout().logoutUrl("/logout");*/
+                .logout().logoutUrl("/logout");
 
 
     }
-
-
-
-
-    /*
-
-    http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/oauth/**")
-                .permitAll()
-                .antMatchers("/**")
-                .authenticated();
-
-
-    http.csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeRequests()
-                .antMatchers("/oauth/**", "/**").permitAll();
-
-
-
-      http.csrf().disable()
-                .authorizeRequests().antMatchers("/").anonymous()
-                .and()
-                .authorizeRequests().antMatchers("/edit", "/add", "/api/delete",
-                                                            "/authors/edit", "/authors/add", "/api/authors/delete",
-                                                            "/genres/edit", "/genres/add", "/api/genres/delete").hasRole("ADMIN")
-                .and()
-                    .authorizeRequests().antMatchers("/authors", "/genres" ).hasAnyRole("ADMIN", "USER")
-                .and()
-                    .formLogin()
-                    .usernameParameter("books_user")
-                    .passwordParameter("books_password")
-                .failureForwardUrl("/error")
-                .and()
-                .logout().logoutUrl("/logout");
-    * */
 
     @Bean
     public RemoteTokenServices remoteTokenService() {
