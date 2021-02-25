@@ -2,11 +2,10 @@ package ru.otus.spring.page;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +18,7 @@ import ru.otus.spring.repostory.GenreRepository;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Controller
+@Log4j2
 public class BookPageController {
 
     @Autowired
@@ -36,19 +36,11 @@ public class BookPageController {
     }
 
     @GetMapping("/")
-    public String books(Model model, Principal principal) {
-        model.addAttribute("user", "authentication.getName()");
-  //      Authentication authentication = (Authentication) principal;
-      //  SecurityContext context = SecurityContextHolder.getContext();
-      //  Authentication authentication = context.getAuthentication();
-     //   if (authentication == null) {
-     //       model.addAttribute("user", authentication.getName());
-     //   } else {
-     //       model.addAttribute("user", "authentication.getName()");
-     //   }
-      //
-      //  var auth= SecurityContextHolder.getContext().getAuthentication();
-
+    public String books(Model model) { //, Principal principal
+        //OAuth2Authentication authentication = (OAuth2Authentication) principal;
+        ///Map<String, Object> user = (Map<String, Object>) authentication.getUserAuthentication().getDetails();
+        //System.out.println("-------------------------------- user " + user);
+     //   model.addAttribute("user", user);
 
         return "books";
     }

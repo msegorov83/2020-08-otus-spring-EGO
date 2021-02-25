@@ -22,7 +22,7 @@ public class GenreController {
     }
 
     @RequestMapping("/api/genres/delete")
-    public void deleteGenre(@RequestParam("id") long id, Model model) {
-        genreRepository.deleteById(id);
+    public void deleteGenre(@RequestParam("id") String id, Model model) {
+        genreRepository.deleteById(Long.valueOf(id));
     }
 }

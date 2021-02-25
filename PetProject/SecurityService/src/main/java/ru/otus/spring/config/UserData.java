@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class UserData implements UserDetails {
+public class UserData  implements UserDetails{
 
     private User user = new User();
 

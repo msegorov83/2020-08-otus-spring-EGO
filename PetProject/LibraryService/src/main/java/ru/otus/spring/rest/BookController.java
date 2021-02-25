@@ -9,7 +9,6 @@ import ru.otus.spring.repostory.BookRepository;
 import ru.otus.spring.rest.dto.BookDto;
 
 @RestController
-@RequestMapping("/library")
 public class BookController {
 
     private final BookRepository bookRepository;
