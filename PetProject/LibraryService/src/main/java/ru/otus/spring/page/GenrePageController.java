@@ -17,7 +17,7 @@ import ru.otus.spring.repostory.GenreRepository;
 public class GenrePageController {
 
     @Autowired
-    private GenreRepository genreRepository;
+    private final GenreRepository genreRepository;
 
     public GenrePageController(GenreRepository genreRepository) {
         this.genreRepository = genreRepository;

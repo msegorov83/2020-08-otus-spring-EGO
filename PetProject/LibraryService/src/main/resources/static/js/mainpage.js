@@ -1,5 +1,5 @@
  $(function () {
-    $.get('/library/api/books').done(function (books) {
+    $.get('/api/books').done(function (books) {
         books.forEach(function (book) {
 
             $("#books").find('tbody').append(`

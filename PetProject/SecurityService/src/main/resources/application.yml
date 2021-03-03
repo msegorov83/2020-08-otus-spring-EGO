@@ -4,20 +4,32 @@ server:
 spring:
   application:
     name: oauth-service
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
 eureka:
   client:
-    fetch-registry: false
+    fetch-registry: true
     register-with-eureka: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
 security:
   oauth2:
+    client:
+      access-token-uri: http://localhost:8070/oauth/token
+      client-secret: user
+      id: user
     resource:
       jwt:
         key-value: 123
+
+
